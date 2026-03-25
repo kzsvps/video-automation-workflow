@@ -102,8 +102,8 @@ export default function BrandKitDrawer({ onClose }: Props) {
             <div className="grid grid-cols-3 gap-2">
               {brandColors.map(c => (
                 <button key={c.hex} onClick={() => { setSelectedColor(c.hex); setCustomColor(c.hex); }}
-                  className={cn("flex items-center gap-2 p-2.5 rounded-xl border transition-all text-xs", selectedColor === c.hex ? "border-white/30 ring-2 ring-offset-1 ring-offset-surface" : "border-border hover:border-border/60")}
-                  style={{ ringColor: c.hex }}>
+                  className={cn("flex items-center gap-2 p-2.5 rounded-xl border transition-all text-xs", selectedColor === c.hex ? "border-white/30 ring-2 ring-offset-1 ring-offset-surface" : "border-border hover:border-border/80")}
+                  style={{ "--tw-ring-color": c.hex } as React.CSSProperties}>
                   <div className="w-5 h-5 rounded-md shrink-0" style={{ backgroundColor: c.hex }} />
                   <span className="text-text-secondary truncate">{c.name}</span>
                 </button>
