@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 import { analyticsData } from "@/lib/mockData";
+import { useApp } from "@/lib/AppContext";
 
 export default function FeedbackLoop() {
   const [updated, setUpdated] = useState(false);
+  const { addToast } = useApp();
+
+  const handleUpdatePersona = () => {
+    setUpdated(true);
+    addToast("已成功將分析建議（震驚型開場、幽默語氣）更新至目前人設！", "success");
+  };
 
   return (
     <div className="card space-y-4 border-gradient">
@@ -35,13 +42,13 @@ export default function FeedbackLoop() {
 
       {!updated ? (
         <button
-          onClick={() => setUpdated(true)}
+          onClick={handleUpdatePersona}
           className="btn-primary w-full text-center py-3 text-sm"
         >
           🔁 將建議更新至人設設定
         </button>
       ) : (
-        <div className="w-full py-3 text-center text-sm bg-success/10 border border-success/30 rounded-xl text-success font-medium">
+        <div className="w-full py-3 text-center text-sm bg-success/10 border border-success/30 rounded-xl text-success font-medium animate-fade-in">
           ✓ 人設已更新！下次生成將採用新偏好
         </div>
       )}

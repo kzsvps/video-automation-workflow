@@ -1,11 +1,9 @@
 import "./globals.css";
 import Sidebar from "@/components/layout/Sidebar";
+import { AppProvider } from "@/lib/AppContext";
+import ToastContainer from "@/components/ui/Toast";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-TW" suppressHydrationWarning>
       <head>
@@ -19,10 +17,13 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-background text-text-primary flex h-screen overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto">
-          {children}
-        </main>
+        <AppProvider>
+          <Sidebar />
+          <main className="flex-1 overflow-y-auto min-w-0">
+            {children}
+          </main>
+          <ToastContainer />
+        </AppProvider>
       </body>
     </html>
   );
