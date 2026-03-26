@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import IdeaInput from "@/components/step1/IdeaInput";
 import ScriptEditor from "@/components/step2/ScriptEditor";
@@ -37,6 +37,46 @@ export default function StudioPage() {
   const [bgmVolume, setBgmVolume] = useState(30);
   const [voiceVolume, setVoiceVolume] = useState(85);
   const [selectedBgm, setSelectedBgm] = useState("bgm-1");
+
+  // ── Resizable split panel ──────────────────────────────────────────
+  const [scriptWidth, setScriptWidth] = useState(320);
+  const MIN_SCRIPT = 220;
+  const MAX_SCRIPT = 560;
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const onDividerMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    startX.current = e.clientX;
+    startWidth.current = scriptWidth;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  }, [scriptWidth]);
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDragging.current) return;
+      const delta = e.clientX - startX.current;
+      const next = Math.min(MAX_SCRIPT, Math.max(MIN_SCRIPT, startWidth.current + delta));
+      setScriptWidth(next);
+    };
+    const onMouseUp = () => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, []);
+  // ──────────────────────────────────────────────────────────────────
 
   const slideVariants = {
     initial: { opacity: 0, x: 20 },
@@ -131,9 +171,12 @@ export default function StudioPage() {
 
           {currentStep === 2 && (
             <motion.div key="step2" variants={slideVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="flex-1 flex flex-col h-full">
-              <div className="flex flex-1 overflow-hidden min-h-0">
-                {/* Left: Script — compact sidebar */}
-                <div className="w-[290px] shrink-0 border-r border-border overflow-y-auto bg-background/60">
+              <div ref={containerRef} className="flex flex-1 overflow-hidden min-h-0 select-none">
+                {/* Left: Script — resizable */}
+                <div
+                  className="shrink-0 border-r border-border overflow-y-auto bg-background/60 flex flex-col"
+                  style={{ width: scriptWidth }}
+                >
                   <div className="px-4 pt-4 pb-2 border-b border-border bg-white sticky top-0 z-10">
                     <h2 className="text-sm font-bold text-text-primary flex items-center gap-1.5">
                       <span className="text-gradient">Step 2</span>
@@ -141,7 +184,7 @@ export default function StudioPage() {
                     </h2>
                     <p className="text-[11px] text-text-muted mt-0.5">編輯腳本、選聲音與 BGM</p>
                   </div>
-                  <div className="p-3">
+                  <div className="p-3 flex-1 overflow-y-auto">
                     <ScriptEditor
                       selectedVoice={selectedVoice}
                       onVoiceChange={setSelectedVoice}
@@ -155,8 +198,20 @@ export default function StudioPage() {
                   </div>
                 </div>
 
-                {/* Right: Preview — takes all remaining space */}
-                <div className="flex-1 flex flex-col overflow-y-auto">
+                {/* Drag divider */}
+                <div
+                  onMouseDown={onDividerMouseDown}
+                  className="group relative w-[5px] shrink-0 cursor-col-resize flex items-center justify-center bg-transparent hover:bg-primary/10 active:bg-primary/20 transition-colors z-10"
+                  title="拖曳調整面板寬度"
+                >
+                  {/* visual pill */}
+                  <div className="w-[3px] h-10 rounded-full bg-border group-hover:bg-primary/40 group-active:bg-primary transition-colors" />
+                  {/* invisible wider hit area */}
+                  <div className="absolute inset-y-0 -left-1.5 -right-1.5" />
+                </div>
+
+                {/* Right: Preview — takes remaining space */}
+                <div className="flex-1 flex flex-col overflow-y-auto min-w-0">
                   <div className="px-6 pt-4 pb-2 border-b border-border bg-white sticky top-0 z-10">
                     <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-primary inline-block" />
