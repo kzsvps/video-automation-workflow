@@ -99,7 +99,7 @@ export default function StatsChart() {
                     <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2A2A38" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E3E7F1" vertical={false} />
                 <XAxis 
                   dataKey="day" 
                   tick={{ fill: "#8f8fa3", fontSize: 10 }} 
@@ -114,8 +114,8 @@ export default function StatsChart() {
                   tickFormatter={(val) => `${val / 1000}k`}
                 />
                 <Tooltip
-                  contentStyle={{ background: "#1A1A24", border: "1px solid #2A2A38", borderRadius: 12, fontSize: 11 }}
-                  labelStyle={{ color: "#F0F0F8", marginBottom: 4 }}
+                  contentStyle={{ background: "#FFFFFF", border: "1px solid #E3E7F1", borderRadius: 12, fontSize: 11, boxShadow: "0 4px 12px rgba(15,23,42,0.10)" }}
+                  labelStyle={{ color: "#0F172A", marginBottom: 4 }}
                   itemStyle={{ padding: 0 }}
                   formatter={(value: number) => [value.toLocaleString(), "觀看數"]}
                 />
@@ -135,14 +135,14 @@ export default function StatsChart() {
                 startAngle={90} endAngle={-270}
               >
                 <RadialBar
-                  background={{ fill: '#2A2A38' }}
+                  background={{ fill: '#E3E7F1' }}
                   dataKey="value"
                   cornerRadius={10}
                   animationDuration={1500}
                 />
                 <Tooltip 
                   cursor={{ fill: 'transparent' }}
-                  contentStyle={{ background: "#1A1A24", border: "1px solid #2A2A38", borderRadius: 8, fontSize: 11 }}
+                  contentStyle={{ background: "#FFFFFF", border: "1px solid #E3E7F1", borderRadius: 8, fontSize: 11, boxShadow: "0 4px 12px rgba(15,23,42,0.10)" }}
                   formatter={(value: number, name: string) => [name === "互動率" ? `${(value/10).toFixed(1)}%` : `${value}%`, name]}
                 />
               </RadialBarChart>

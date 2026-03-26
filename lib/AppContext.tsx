@@ -9,6 +9,15 @@ export interface ToastItem {
   type: "success" | "error" | "info" | "warning";
 }
 
+export interface ScheduledEvent {
+  id: string;
+  title: string;
+  platform: string;
+  scheduledAt: string; // ISO string
+  status: "scheduled" | "draft" | "published";
+  thumbnail: string;
+}
+
 export function getInitialScriptText() {
   return {
     opening: defaultScript.opening.text,
@@ -34,6 +43,8 @@ interface AppState {
   setUploadedFiles: React.Dispatch<React.SetStateAction<string[]>>;
   activeFrame: number;
   setActiveFrame: React.Dispatch<React.SetStateAction<number>>;
+  scheduledEvents: ScheduledEvent[];
+  addScheduledEvent: (e: ScheduledEvent) => void;
 }
 
 const AppContext = createContext<AppState | null>(null);
@@ -46,6 +57,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [scriptText, setScriptText] = useState<Record<string, string>>(getInitialScriptText());
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [activeFrame, setActiveFrame] = useState(0);
+  const [scheduledEvents, setScheduledEvents] = useState<ScheduledEvent[]>([]);
+
+  const addScheduledEvent = useCallback((e: ScheduledEvent) => {
+    setScheduledEvents(prev => [...prev, e]);
+  }, []);
 
   const addToast = useCallback((message: string, type: ToastItem["type"] = "success") => {
     const id = Math.random().toString(36).slice(2);
@@ -66,6 +82,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       scriptText, setScriptText,
       uploadedFiles, setUploadedFiles,
       activeFrame, setActiveFrame,
+      scheduledEvents, addScheduledEvent,
     }}>
       {children}
     </AppContext.Provider>

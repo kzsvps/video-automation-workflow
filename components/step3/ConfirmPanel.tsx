@@ -25,7 +25,7 @@ const generateSteps = [
 
 export default function ConfirmPanel(props: Props) {
   const router = useRouter();
-  const { scriptText, uploadedFiles, activeFrame, addToast } = useApp();
+  const { scriptText, uploadedFiles, activeFrame, addToast, addScheduledEvent } = useApp();
   const [generating, setGenerating] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1);
   const [done, setDone] = useState(false);
@@ -76,7 +76,15 @@ export default function ConfirmPanel(props: Props) {
         setTimeout(() => {
           setDone(true);
           if (isScheduled) {
-            addToast(`影片將於 ${new Date(scheduleTime).toLocaleString()} 發布！`, "success");
+            addScheduledEvent({
+              id: `sched-${Date.now()}`,
+              title: props.topic || "新影片",
+              platform: "TikTok / IG Reels / YouTube",
+              scheduledAt: new Date(scheduleTime).toLocaleString("zh-TW"),
+              status: "scheduled",
+              thumbnail: currentFrameData?.isUpload ? "🎬" : (currentFrameData?.thumbnail || "🎬"),
+            });
+            addToast(`影片將於 ${new Date(scheduleTime).toLocaleString("zh-TW")} 發布！`, "success");
           }
           setTimeout(() => router.push("/dashboard"), 1500);
         }, generateSteps[step].duration);

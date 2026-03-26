@@ -4,6 +4,7 @@ import { useState } from "react";
 import { scheduledPosts, platforms, hashtagSuggestions } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useApp } from "@/lib/AppContext";
 
 const statusColors = {
   scheduled: "bg-primary/20 text-primary-light",
@@ -14,11 +15,33 @@ const statusLabels = { scheduled: "已排程", draft: "草稿", published: "已�
 
 // Simple month calendar mock
 const calendarDays = Array.from({ length: 31 }, (_, i) => i + 1);
-const scheduledDays = [27, 28, 29];
-const today = 26;
+const today = new Date().getDate();
 
 export default function PublishPanel() {
+  const { scheduledEvents } = useApp();
   const [activePost, setActivePost] = useState<string | null>(null);
+
+  // Derive scheduled days from both mock data and context events
+  const contextScheduledDays = scheduledEvents
+    .map(e => {
+      const d = new Date(e.scheduledAt);
+      return isNaN(d.getTime()) ? null : d.getDate();
+    })
+    .filter((d): d is number => d !== null);
+  const scheduledDays = Array.from(new Set([27, 28, 29, ...contextScheduledDays]));
+
+  // Merge mock posts with dynamic context events
+  const allPosts = [
+    ...scheduledEvents.map(e => ({
+      id: e.id,
+      title: e.title,
+      platform: e.platform,
+      scheduledAt: e.scheduledAt,
+      status: e.status,
+      thumbnail: e.thumbnail,
+    })),
+    ...scheduledPosts,
+  ];
   const [title, setTitle] = useState("你一定沒用過的 AI 工具！90% 的人都不知道");
   const [desc, setDesc] = useState("今天分享一個改變我工作方式的 AI 工具，讓你的生產力直接翻倍！");
   const [hashtags, setHashtags] = useState("#AI工具 #效率提升 #科技 #人工智慧 #工作技巧");
@@ -76,7 +99,7 @@ export default function PublishPanel() {
             <button className="text-xs text-primary-light hover:text-primary transition-colors">+ 新增</button>
           </div>
           <div className="space-y-2">
-            {scheduledPosts.map((post) => (
+            {allPosts.map((post) => (
               <div
                 key={post.id}
                 onClick={() => setActivePost(activePost === post.id ? null : post.id)}

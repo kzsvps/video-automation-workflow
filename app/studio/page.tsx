@@ -132,37 +132,44 @@ export default function StudioPage() {
           {currentStep === 2 && (
             <motion.div key="step2" variants={slideVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }} className="flex-1 flex flex-col h-full">
               <div className="flex flex-1 overflow-hidden min-h-0">
-                {/* Left: Script */}
-                <div className="flex-1 p-6 overflow-y-auto border-r border-border">
-                  <div className="mb-4">
-                    <h2 className="text-xl font-bold">
+                {/* Left: Script — compact sidebar */}
+                <div className="w-[290px] shrink-0 border-r border-border overflow-y-auto bg-background/60">
+                  <div className="px-4 pt-4 pb-2 border-b border-border bg-white sticky top-0 z-10">
+                    <h2 className="text-sm font-bold text-text-primary flex items-center gap-1.5">
                       <span className="text-gradient">Step 2</span>
-                      <span className="text-text-primary ml-2">— 腳本與音軌調試</span>
+                      <span>腳本 & 音軌</span>
                     </h2>
-                    <p className="text-xs text-text-muted mt-1">調整 AI 生成的腳本，選擇聲音與背景音樂</p>
+                    <p className="text-[11px] text-text-muted mt-0.5">編輯腳本、選聲音與 BGM</p>
                   </div>
-                  <ScriptEditor
-                    selectedVoice={selectedVoice}
-                    onVoiceChange={setSelectedVoice}
-                    bgmVolume={bgmVolume}
-                    onBgmVolumeChange={setBgmVolume}
-                    voiceVolume={voiceVolume}
-                    onVoiceVolumeChange={setVoiceVolume}
-                    selectedBgm={selectedBgm}
-                    onBgmChange={setSelectedBgm}
-                  />
+                  <div className="p-3">
+                    <ScriptEditor
+                      selectedVoice={selectedVoice}
+                      onVoiceChange={setSelectedVoice}
+                      bgmVolume={bgmVolume}
+                      onBgmVolumeChange={setBgmVolume}
+                      voiceVolume={voiceVolume}
+                      onVoiceVolumeChange={setVoiceVolume}
+                      selectedBgm={selectedBgm}
+                      onBgmChange={setSelectedBgm}
+                    />
+                  </div>
                 </div>
 
-                {/* Right: Preview */}
-                <div className="w-[340px] md:w-[400px] p-6 overflow-y-auto bg-background/30 border-l border-border/50 shadow-inner">
-                  <div className="mb-4">
-                    <h3 className="text-sm font-bold text-text-secondary">所見即所得預覽</h3>
-                    <p className="text-xs text-text-muted mt-0.5">即時查看字幕、素材與畫面效果</p>
+                {/* Right: Preview — takes all remaining space */}
+                <div className="flex-1 flex flex-col overflow-y-auto">
+                  <div className="px-6 pt-4 pb-2 border-b border-border bg-white sticky top-0 z-10">
+                    <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-primary inline-block" />
+                      所見即所得預覽
+                      <span className="text-[10px] font-normal text-text-muted ml-1">字幕 · 素材 · 畫面效果即時更新</span>
+                    </h3>
                   </div>
-                  <PhonePreview
-                    selectedTemplate={selectedTemplate}
-                    onTemplateChange={setSelectedTemplate}
-                  />
+                  <div className="flex-1 p-6">
+                    <PhonePreview
+                      selectedTemplate={selectedTemplate}
+                      onTemplateChange={setSelectedTemplate}
+                    />
+                  </div>
                 </div>
               </div>
 

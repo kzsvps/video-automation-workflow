@@ -53,32 +53,43 @@ export default function PhonePreview({ selectedTemplate, onTemplateChange }: Pro
   const currentFrameData = combinedFrames[activeFrame % combinedFrames.length] || combinedFrames[0];
 
   return (
-    <div className="flex flex-col gap-4 h-full overflow-y-auto custom-scrollbar pb-20">
-      
-      {/* Ratio Toggle */}
-      <div className="flex bg-background border border-border rounded-xl p-1 shrink-0">
-        <button
-          onClick={() => setRatio("9:16")}
-          className={cn("flex-1 py-1.5 text-xs font-medium rounded-lg transition-all", ratio === "9:16" ? "bg-primary text-white shadow" : "text-text-muted hover:text-text-primary")}
-        >
-          9:16 直式
-        </button>
-        <button
-          onClick={() => setRatio("16:9")}
-          className={cn("flex-1 py-1.5 text-xs font-medium rounded-lg transition-all", ratio === "16:9" ? "bg-primary text-white shadow" : "text-text-muted hover:text-text-primary")}
-        >
-          16:9 橫式
-        </button>
+    <div className="flex flex-col gap-5 h-full overflow-y-auto custom-scrollbar pb-8">
+
+      {/* Top row: ratio toggle + subtitle color */}
+      <div className="flex items-center gap-3">
+        <div className="flex bg-white border border-border rounded-xl p-1 flex-1 shadow-card">
+          <button
+            onClick={() => setRatio("9:16")}
+            className={cn("flex-1 py-1.5 text-xs font-medium rounded-lg transition-all", ratio === "9:16" ? "bg-primary text-white shadow" : "text-text-muted hover:text-text-primary")}
+          >
+            📱 9:16 直式
+          </button>
+          <button
+            onClick={() => setRatio("16:9")}
+            className={cn("flex-1 py-1.5 text-xs font-medium rounded-lg transition-all", ratio === "16:9" ? "bg-primary text-white shadow" : "text-text-muted hover:text-text-primary")}
+          >
+            🖥 16:9 橫式
+          </button>
+        </div>
+        <div className="flex items-center gap-2 bg-white border border-border rounded-xl px-3 py-2 shadow-card">
+          <span className="text-[11px] text-text-muted whitespace-nowrap">字幕色</span>
+          <input
+            type="color"
+            value={customColor || tpl.color}
+            onChange={(e) => setCustomColor(e.target.value)}
+            className="w-6 h-6 rounded cursor-pointer border-0 p-0"
+          />
+        </div>
       </div>
 
-      {/* Viewport Frame */}
-      <div className="flex flex-col items-center shrink-0">
-        <motion.div 
+      {/* Viewport Frame — LARGE center */}
+      <div className="flex flex-col items-center">
+        <motion.div
           layout
-          className="relative transition-all duration-500 ease-in-out" 
-          style={{ 
-            width: ratio === "9:16" ? 200 : 360, 
-            height: ratio === "9:16" ? 360 : 200 
+          className="relative"
+          style={{
+            width:  ratio === "9:16" ? 270 : 480,
+            height: ratio === "9:16" ? 480 : 270,
           }}
         >
           {/* Phone Shell */}
